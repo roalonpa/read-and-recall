@@ -1,10 +1,10 @@
-import Anthropic from '@anthropic-ai/sdk'
+const Anthropic = require('@anthropic-ai/sdk')
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
   if (!process.env.ANTHROPIC_API_KEY) {
-    return res.status(500).json({ error: 'ANTHROPIC_API_KEY is not set in environment variables.' })
+    return res.status(500).json({ error: 'ANTHROPIC_API_KEY is not configured.' })
   }
 
   try {

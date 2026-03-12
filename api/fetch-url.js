@@ -1,8 +1,10 @@
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' })
 
   try {
     const { url } = req.query
+    if (!url) return res.status(400).json({ error: 'No URL provided.' })
+
     const response = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } })
     const html = await response.text()
     const text = html
@@ -14,6 +16,6 @@ export default async function handler(req, res) {
     res.json({ text })
   } catch (err) {
     console.error('/api/fetch-url error:', err.message)
-    res.status(500).json({ error: 'Failed to fetch URL.' })
+    res.status(500).json({ error: err.message || 'Failed to fetch URL.' })
   }
 }
