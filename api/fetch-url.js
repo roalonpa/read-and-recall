@@ -1,0 +1,19 @@
+export default async function handler(req, res) {
+  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' })
+
+  try {
+    const { url } = req.query
+    const response = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } })
+    const html = await response.text()
+    const text = html
+      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+    res.json({ text })
+  } catch (err) {
+    console.error('/api/fetch-url error:', err.message)
+    res.status(500).json({ error: 'Failed to fetch URL.' })
+  }
+}
